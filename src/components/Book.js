@@ -2,6 +2,11 @@ import React, {PureComponent} from 'react'
 import './Book.css'
 
 export default class Book extends PureComponent {
+  static defaultProps = {
+    book: {},
+    currentShelf: 'read'
+  }
+
   render() {
     const {
       book: {backgroundImage, title, author},
