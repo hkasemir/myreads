@@ -3,19 +3,22 @@ import './Book.css'
 
 export default class Book extends PureComponent {
   static defaultProps = {
-    book: {},
-    currentShelf: 'read'
+    book: {
+      authors: [],
+      imageLinks: {}
+    },
+    currentShelf: 'none'
   }
 
   render() {
     const {
-      book: {backgroundImage, title, author},
+      book: {imageLinks, title, authors},
       currentShelf
     } = this.props
     return (
       <article className='book'>
         <div className='book-top'>
-          <div className='book-cover' style={{ width: 128, height: 193, backgroundImage: `url(${backgroundImage})` }}></div>
+          <div className='book-cover' style={{ width: 128, height: 193, backgroundImage: `url(${imageLinks && imageLinks.smallThumbnail})` }}></div>
           <div className='book-shelf-changer'>
             <select>
               <option value='none' disabled>Move to...</option>
@@ -27,7 +30,7 @@ export default class Book extends PureComponent {
           </div>
         </div>
         <div className='book-title'>{title}</div>
-        <div className='book-authors'>{author}</div>
+        { authors && <div className='book-authors'>{authors.join(', ')}</div> }
       </article>
     );
   }

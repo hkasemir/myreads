@@ -20,7 +20,7 @@ export default class BookShelf extends PureComponent {
           <ol className='books-grid'>
           {
             books.map(book => (
-              <li key={book.backgroundImage}>
+              <li key={book.id}>
                 <Book
                   book={book}
                 />
