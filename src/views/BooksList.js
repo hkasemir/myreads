@@ -3,22 +3,15 @@ import {Link} from 'react-router-dom'
 import BookShelf from '../components/BookShelf'
 import './BooksList.css'
 
-const books = [{
-  shelf: 'currentlyReading',
-  title: "Ender's Game",
-  author: 'Orston Scott Card',
-  backgroundImage: 'http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api'
-}]
-
 const shelves = [{
   title: 'Currently Reading',
-  books
+  id: 'currentlyReading'
 }, {
   title: 'Want To Read',
-  books
+  id: 'wantToRead'
 }, {
   title: 'Already Read',
-  books
+  id: 'read'
 }]
 
 export default class BooksList extends PureComponent {
@@ -36,9 +29,9 @@ export default class BooksList extends PureComponent {
           {
             shelves.map(shelf => (
               <BookShelf
-                key={shelf.title}
-                shelf={shelf.title}
-                books={shelf.books}
+                key={shelf.id}
+                shelf={shelf}
+                books={this.props.books}
               />
             ))
           }

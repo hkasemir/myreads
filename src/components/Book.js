@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react'
+import * as BooksApi from '../services/BooksAPI'
 import './Book.css'
 
 export default class Book extends PureComponent {
@@ -8,6 +9,13 @@ export default class Book extends PureComponent {
       imageLinks: {}
     },
     currentShelf: 'none'
+  }
+
+  handleAssignShelf = (evt) => {
+    console.log(this.props)
+    console.log(evt.target.value)
+    return BooksApi.update(this.props.book, evt.target.value)
+    .then(res => console.log(res))
   }
 
   render() {
@@ -20,7 +28,7 @@ export default class Book extends PureComponent {
         <div className='book-top'>
           <div className='book-cover' style={{ width: 128, height: 193, backgroundImage: `url(${imageLinks && imageLinks.smallThumbnail})` }}></div>
           <div className='book-shelf-changer'>
-            <select>
+            <select onChange={this.handleAssignShelf}>
               <option value='none' disabled>Move to...</option>
               <option value='currentlyReading' disabled={currentShelf === 'currentlyReading'}>Currently Reading</option>
               <option value='wantToRead' disabled={currentShelf === 'wantToRead'}>Want to Read</option>

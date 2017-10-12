@@ -50,7 +50,7 @@ export default class Search extends PureComponent {
           <h2>Sorry, that's not an acceptable search term!</h2>
           :
           <BookShelf
-            shelf='Search Results'
+            shelf={{title: 'Search Results', id: 'search'}}
             books={results}
           />
         }
