@@ -1,9 +1,9 @@
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import _ from 'lodash'
 import Book from './Book'
 import './BookShelf.css'
 
-export default class BookShelf extends PureComponent {
+export default class BookShelf extends Component {
   static defaultProps = {
     shelf: {
       id: 'none',
@@ -15,22 +15,21 @@ export default class BookShelf extends PureComponent {
   render() {
     const {
       shelf,
-      books
+      books,
+      onAssignShelf
     } = this.props
-    let booksOnShelf = _.filter(books, {shelf: shelf.id}, books)
-    if (shelf.id === 'search') {
-      booksOnShelf = books
-    }
     return (
       <div className='bookshelf'>
         <h2 className='bookshelf-title'>{shelf.title}</h2>
         <div className='bookshelf-books'>
           <ol className='books-grid'>
           {
-            booksOnShelf.map(book => (
+            books.map(book => (
               <li key={book.id}>
                 <Book
                   book={book}
+                  onAssignShelf={onAssignShelf}
+                  shelf={shelf.id}
                 />
               </li>
             ))

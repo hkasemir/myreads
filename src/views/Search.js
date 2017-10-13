@@ -1,16 +1,14 @@
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
+import _ from 'lodash'
 import BookShelf from '../components/BookShelf'
 import * as BooksApi from '../services/BooksAPI'
 import './Search.css'
 
-export default class Search extends PureComponent {
+export default class Search extends Component {
   state = {
     query: '',
     results: []
-  }
-
-  static defaultProps = {
   }
 
   searchBooks = async (evt) => {
@@ -19,12 +17,29 @@ export default class Search extends PureComponent {
     if (query) {
       try {
         const results = await BooksApi.search(query, 20)
-        return this.setState({results})
+        const resultsWithExistingBookShelves = this.applyExistingShelves(results)
+        return this.setState({results: resultsWithExistingBookShelves})
       } catch (err) {
         return console.error('searching didn\'t work ;\'( ', err)
       }
     }
     return this.setState({results: []})
+  }
+
+  applyExistingShelves(results) {
+    return results.map(result => {
+      const existingBook = _.find(this.props.userBooks, {id: result.id})
+      if (existingBook) {
+        return existingBook
+      }
+      return result
+    })
+  }
+
+  handleAssignShelf = (book, bookIdsPerShelf) => {
+    const newState = this.state.results.filter(result => result.id !== book.id)
+    this.setState({results: newState})
+    this.props.onAssignShelf(book, bookIdsPerShelf)
   }
 
   render() {
@@ -50,8 +65,9 @@ export default class Search extends PureComponent {
           <h2>Sorry, that's not an acceptable search term!</h2>
           :
           <BookShelf
-            shelf={{title: 'Search Results', id: 'search'}}
+            shelf={{title: 'Search Results'}}
             books={results}
+            onAssignShelf={this.handleAssignShelf}
           />
         }
         </div>

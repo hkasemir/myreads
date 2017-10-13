@@ -1,5 +1,6 @@
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
+import _ from 'lodash'
 import BookShelf from '../components/BookShelf'
 import './BooksList.css'
 
@@ -14,12 +15,14 @@ const shelves = [{
   id: 'read'
 }]
 
-export default class BooksList extends PureComponent {
+export default class BooksList extends Component {
   static defaultProps = {
-    books: []
+    books: [],
+    bookIdsPerShelf: {}
   }
 
   render() {
+    const {bookIdsPerShelf, books} = this.props
     return (
       <section className='list-books'>
         <header className='list-books-title'>
@@ -27,13 +30,17 @@ export default class BooksList extends PureComponent {
         </header>
         <div className='list-books-content'>
           {
-            shelves.map(shelf => (
-              <BookShelf
-                key={shelf.id}
-                shelf={shelf}
-                books={this.props.books}
-              />
-            ))
+            shelves.map(shelf => {
+              const shelfBooks = bookIdsPerShelf[shelf.id].map(bookId => _.find(books, {id: bookId}))
+              return (
+                <BookShelf
+                  key={shelf.id}
+                  shelf={shelf}
+                  books={shelfBooks}
+                  onAssignShelf={this.props.onAssignShelf}
+                />
+              )
+            })
           }
         </div>
         <div className='open-search'>

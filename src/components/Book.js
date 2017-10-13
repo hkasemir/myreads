@@ -1,39 +1,41 @@
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import * as BooksApi from '../services/BooksAPI'
 import './Book.css'
 
-export default class Book extends PureComponent {
+export default class Book extends Component {
   static defaultProps = {
     book: {
       authors: [],
       imageLinks: {}
     },
-    currentShelf: 'none'
+    onAssignShelf: () => true
   }
 
-  handleAssignShelf = (evt) => {
-    console.log(this.props)
-    console.log(evt.target.value)
-    return BooksApi.update(this.props.book, evt.target.value)
-    .then(res => console.log(res))
+  handleAssignShelf = async (evt) => {
+    const shelf = evt.target.value
+    const bookIdsPerShelf = await BooksApi.update(this.props.book, shelf)
+    const book = {
+      ...this.props.book,
+      shelf
+    }
+    this.props.onAssignShelf(book, bookIdsPerShelf)
   }
 
   render() {
     const {
-      book: {imageLinks, title, authors},
-      currentShelf
+      book: {shelf, imageLinks, title, authors}
     } = this.props
     return (
       <article className='book'>
         <div className='book-top'>
           <div className='book-cover' style={{ width: 128, height: 193, backgroundImage: `url(${imageLinks && imageLinks.smallThumbnail})` }}></div>
           <div className='book-shelf-changer'>
-            <select onChange={this.handleAssignShelf}>
-              <option value='none' disabled>Move to...</option>
-              <option value='currentlyReading' disabled={currentShelf === 'currentlyReading'}>Currently Reading</option>
-              <option value='wantToRead' disabled={currentShelf === 'wantToRead'}>Want to Read</option>
-              <option value='read' disabled={currentShelf === 'read'}>Read</option>
-              <option value='none' disabled={currentShelf === 'none'}>None</option>
+            <select onChange={this.handleAssignShelf} defaultValue={shelf || 'none'}>
+              <option value='move' disabled>Move to...</option>
+              <option value='currentlyReading' disabled={shelf === 'currentlyReading'}>Currently Reading</option>
+              <option value='wantToRead' disabled={shelf === 'wantToRead'}>Want to Read</option>
+              <option value='read' disabled={shelf === 'read'}>Read</option>
+              <option value='none' disabled={shelf === 'none'}>None</option>
             </select>
           </div>
         </div>
